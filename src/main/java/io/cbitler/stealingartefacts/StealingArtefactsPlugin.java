@@ -41,7 +41,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     public ArrayList<GameObject> markedObjects = new ArrayList<>();
 
-    public HashMap<Integer, NPC> markedNPCs = new HashMap<>();
+    public ArrayList<NPC> markedNPCs = new ArrayList<>();
 
     public StealingArtefactsState currentState;
 
@@ -185,7 +185,7 @@ public class StealingArtefactsPlugin extends Plugin {
             captainKhaled = event.getNpc();
         }
         if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
-            markedNPCs.put(event.getNpc().getId(), event.getNpc());
+            markedNPCs.add(event.getNpc());
         }
     }
 
@@ -202,7 +202,7 @@ public class StealingArtefactsPlugin extends Plugin {
             }
         }
 
-        markedNPCs.remove(event.getNpc().getId());
+        markedNPCs.remove(event.getNpc());
     }
 
     /**
@@ -211,10 +211,10 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onNpcChanged(NpcChanged event) {
-        markedNPCs.remove(event.getOld().getId());
+        markedNPCs.remove(event.getOld());
 
         if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
-            markedNPCs.put(event.getNpc().getId(), event.getNpc());
+            markedNPCs.add(event.getNpc());
         }
     }
 
