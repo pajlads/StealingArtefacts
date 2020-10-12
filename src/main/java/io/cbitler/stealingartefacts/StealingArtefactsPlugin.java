@@ -1,6 +1,7 @@
 package io.cbitler.stealingartefacts;
 
 import com.google.inject.Provides;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
@@ -14,12 +15,14 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 @PluginDescriptor(
         name = "Stealing Artefacts",
         description = "Show the current house for stealing artefacts",
         tags = {}
 )
+@Slf4j
 public class StealingArtefactsPlugin extends Plugin {
     @Inject
     private OverlayManager overlayManager;
@@ -41,7 +44,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     public ArrayList<GameObject> markedObjects = new ArrayList<>();
 
-    public ArrayList<NPC> markedNPCs = new ArrayList<>();
+    public HashSet<NPC> markedNPCs = new HashSet<>();
 
     public StealingArtefactsState currentState;
 
@@ -103,20 +106,6 @@ public class StealingArtefactsPlugin extends Plugin {
     {
         if (client.getGameState() == GameState.LOGIN_SCREEN || client.getGameState() == GameState.LOGGED_IN) {
             loadConfig();
-        }
-    }
-
-    /**
-     * If the game is set to loading, clear the list of marked objects and NPCs
-     * @param e The GameStateChanged event
-     */
-    @Subscribe
-    public void onGameStateChanged(GameStateChanged e)
-    {
-        if (e.getGameState() == GameState.LOADING)
-        {
-            markedObjects.clear();
-            markedNPCs.clear();
         }
     }
 
@@ -186,6 +175,7 @@ public class StealingArtefactsPlugin extends Plugin {
         }
         if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
             markedNPCs.add(event.getNpc());
+            log.debug("NPC Spawned: {} Index: {}", event.getNpc().getName(), event.getNpc().getId());
         }
     }
 
@@ -202,20 +192,8 @@ public class StealingArtefactsPlugin extends Plugin {
             }
         }
 
+        log.debug("NPC Spawned: {} Index: {}", event.getNpc().getName(), event.getNpc().getId());
         markedNPCs.remove(event.getNpc());
-    }
-
-    /**
-     * Handle NPC changed events
-     * @param event The NPCChanged event
-     */
-    @Subscribe
-    public void onNpcChanged(NpcChanged event) {
-        markedNPCs.remove(event.getOld());
-
-        if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
-            markedNPCs.add(event.getNpc());
-        }
     }
 
     /**
@@ -320,5 +298,14 @@ public class StealingArtefactsPlugin extends Plugin {
         }
 
         return false;
+    }
+
+    public void rebuildNPCs() {
+        markedNPCs.clear();
+        for (NPC npc : client.getNpcs()) {
+            if (npc.getId() >= Constants.PATROL_ID_MIN && npc.getId() <= Constants.PATROL_ID_MAX) {
+                markedNPCs.add(npc);
+            }
+        }
     }
 }
