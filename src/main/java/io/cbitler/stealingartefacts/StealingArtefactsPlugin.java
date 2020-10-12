@@ -299,13 +299,4 @@ public class StealingArtefactsPlugin extends Plugin {
 
         return false;
     }
-
-    public void rebuildNPCs() {
-        markedNPCs.clear();
-        for (NPC npc : client.getNpcs()) {
-            if (npc.getId() >= Constants.PATROL_ID_MIN && npc.getId() <= Constants.PATROL_ID_MAX) {
-                markedNPCs.add(npc);
-            }
-        }
-    }
 }
