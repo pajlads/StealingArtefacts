@@ -21,11 +21,13 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
     public static final Color CLICKBOX_FILL_COLOR = new Color(255, 0, 0, 50);
 
     private final StealingArtefactsPlugin plugin;
+    private final Client client;
 
     @Inject
-    StealingArtefactsPatrolOverlay(StealingArtefactsPlugin plugin) {
+    StealingArtefactsPatrolOverlay(Client client, StealingArtefactsPlugin plugin) {
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
+        this.client = client;
         this.plugin = plugin;
     }
 
@@ -36,22 +38,12 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
      */
     @Override
     public Dimension render(Graphics2D graphics) {
+        Point mousePosition = client.getMouseCanvasPosition();
         for (NPC actor : plugin.markedNPCs) {
-            renderPoly(graphics, CLICKBOX_FILL_COLOR, actor.getConvexHull());
+            OverlayUtil.renderHoverableArea(graphics, actor.getConvexHull(),
+                    mousePosition, CLICKBOX_FILL_COLOR, CLICKBOX_BORDER, CLICKBOX_BORDER);
         }
 
         return null;
-    }
-
-    private void renderPoly(Graphics2D graphics, Color color, Shape polygon)
-    {
-        if (polygon != null)
-        {
-            graphics.setColor(color);
-            graphics.setStroke(new BasicStroke(2));
-            graphics.draw(polygon);
-            graphics.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 20));
-            graphics.fill(polygon);
-        }
     }
 }
