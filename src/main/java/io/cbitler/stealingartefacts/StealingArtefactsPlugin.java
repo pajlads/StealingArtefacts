@@ -88,6 +88,14 @@ public class StealingArtefactsPlugin extends Plugin {
         return configManager.getConfig(StealingArtefactsConfig.class);
     }
 
+
+    @Subscribe
+    public void onGameStateChanged(GameStateChanged e) {
+        if (e.getGameState() == GameState.LOGGING_IN || e.getGameState() == GameState.LOGIN_SCREEN || e.getGameState() == GameState.HOPPING) {
+            markedNPCs.clear();
+            markedObjects.clear();
+        }
+    }
     @Subscribe
     public void onConfigChanged(ConfigChanged c) {
         if (!c.getGroup().equalsIgnoreCase(StealingArtefactsConfig.GROUP_NAME)) {
