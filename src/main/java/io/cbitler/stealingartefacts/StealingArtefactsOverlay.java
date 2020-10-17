@@ -1,6 +1,7 @@
 package io.cbitler.stealingartefacts;
 
 import net.runelite.api.Client;
+import net.runelite.client.plugins.xptracker.XpTrackerService;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
@@ -19,7 +20,7 @@ public class StealingArtefactsOverlay extends Overlay {
     private final PanelComponent panelComponent = new PanelComponent();
 
     @Inject
-    private StealingArtefactsOverlay(Client client, StealingArtefactsPlugin plugin, StealingArtefactsConfig config) {
+    private StealingArtefactsOverlay(Client client, StealingArtefactsPlugin plugin) {
         setPosition(OverlayPosition.TOP_LEFT);
         this.client = client;
         this.plugin = plugin;
@@ -36,9 +37,21 @@ public class StealingArtefactsOverlay extends Overlay {
             panelComponent.getChildren().clear();
             String title = "Stealing Artefacts";
             String targetLine = getTargetMessage(plugin.currentState);
+
+            // Title
             panelComponent.getChildren().add(TitleComponent.builder().text(title).color(Color.YELLOW).build());
+
+            // Target
             panelComponent.getChildren().add(LineComponent.builder().left("Current Target:").build());
             panelComponent.getChildren().add(LineComponent.builder().left(targetLine).build());
+
+            // Artefacts to goal
+            if (plugin.artefactsToGoal > 0) {
+                panelComponent.getChildren().add(LineComponent.builder().build());
+                panelComponent.getChildren().add(LineComponent.builder().left("Artefacts until goal:").build());
+                panelComponent.getChildren().add(LineComponent.builder().left(String.valueOf(plugin.artefactsToGoal)).build());
+            }
+
             panelComponent.setPreferredSize(new Dimension(200, 0));
             return panelComponent.render(graphics);
         }

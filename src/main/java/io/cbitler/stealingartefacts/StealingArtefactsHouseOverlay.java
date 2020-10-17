@@ -43,11 +43,9 @@ public class StealingArtefactsHouseOverlay extends Overlay {
         }
 
         Point mousePosition = client.getMouseCanvasPosition();
-        for (GameObject markedObject : plugin.markedObjects) {
-            if (client.getPlane() == plugin.currentState.getDrawerPlane()) {
-                OverlayUtil.renderHoverableArea(graphics, markedObject.getClickbox(), mousePosition,
-                        CLICKBOX_FILL_COLOR, CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
-            }
+        if (client.getPlane() == plugin.currentState.getDrawerPlane() && plugin.markedObject != null) {
+            OverlayUtil.renderHoverableArea(graphics, plugin.markedObject.getClickbox(), mousePosition,
+                    CLICKBOX_FILL_COLOR, CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
         }
 
         return null;

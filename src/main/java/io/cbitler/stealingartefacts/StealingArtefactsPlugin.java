@@ -9,7 +9,10 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
+import net.runelite.client.plugins.xptracker.XpTrackerService;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 import javax.inject.Inject;
@@ -22,6 +25,7 @@ import java.util.HashSet;
         description = "Show the current house for stealing artefacts",
         tags = {}
 )
+@PluginDependency(XpTrackerPlugin.class)
 @Slf4j
 public class StealingArtefactsPlugin extends Plugin {
     @Inject
@@ -42,13 +46,18 @@ public class StealingArtefactsPlugin extends Plugin {
     @Inject
     private Client client;
 
-    public ArrayList<GameObject> markedObjects = new ArrayList<>();
+    @Inject
+    private XpTrackerService xpTrackerService;
+
+    public GameObject markedObject;
 
     public HashSet<NPC> markedNPCs = new HashSet<>();
 
     public StealingArtefactsState currentState;
 
     public NPC captainKhaled;
+
+    public int artefactsToGoal = -1;
 
     /**
      * Handle plugin startup
@@ -93,7 +102,7 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onGameStateChanged(GameStateChanged e) {
         if (e.getGameState() == GameState.LOGGING_IN || e.getGameState() == GameState.LOGIN_SCREEN || e.getGameState() == GameState.HOPPING) {
             markedNPCs.clear();
-            markedObjects.clear();
+            markedObject = null;
         }
     }
     @Subscribe
@@ -146,7 +155,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Subscribe
     public void onGameObjectSpawned(GameObjectSpawned event) {
         if (shouldMarkObject(event.getGameObject())) {
-            markedObjects.add(event.getGameObject());
+            markedObject = event.getGameObject();
         }
     }
 
@@ -158,9 +167,8 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onGameObjectChanged(GameObjectChanged event)
     {
         if(shouldMarkObject(event.getGameObject())) {
-            markedObjects.add(event.getGameObject());
+            markedObject = event.getGameObject();
         }
-        markedObjects.remove(event.getPrevious());
     }
 
     /**
@@ -169,7 +177,7 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
-        markedObjects.remove(event.getGameObject());
+        markedObject = null;
     }
 
     /**
@@ -214,6 +222,7 @@ public class StealingArtefactsPlugin extends Plugin {
         if (client.getGameState() != GameState.LOGGED_IN) {
             return;
         }
+
         StealingArtefactsState state = StealingArtefactsState.values()[client.getVarbitValue(Constants.STEALING_ARTEFACTS_VARBIT)];
         if (state != null) {
             updateState(state);
@@ -233,6 +242,14 @@ public class StealingArtefactsPlugin extends Plugin {
             }
         } else {
             client.setHintArrow(state.getHintLocation());
+        }
+    }
+
+    @Subscribe
+    public void onStatChanged(StatChanged e) {
+        if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
+            artefactsToGoal = StealingArtefactsUtil.artefactsToNextLevel(client, xpTrackerService);
+            log.debug("Artefacts to goal: {}", artefactsToGoal);
         }
     }
 
