@@ -145,6 +145,8 @@ public class StealingArtefactsPlugin extends Plugin {
                     }
                 }
             }
+        } else {
+            client.clearHintArrow();
         }
     }
 
