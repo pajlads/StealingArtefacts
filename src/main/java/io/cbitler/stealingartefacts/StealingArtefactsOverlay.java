@@ -17,13 +17,15 @@ import java.awt.*;
 public class StealingArtefactsOverlay extends Overlay {
     private final StealingArtefactsPlugin plugin;
     private final Client client;
+    private final StealingArtefactsConfig config;
     private final PanelComponent panelComponent = new PanelComponent();
 
     @Inject
-    private StealingArtefactsOverlay(Client client, StealingArtefactsPlugin plugin) {
+    private StealingArtefactsOverlay(Client client, StealingArtefactsPlugin plugin, StealingArtefactsConfig config) {
         setPosition(OverlayPosition.TOP_LEFT);
         this.client = client;
         this.plugin = plugin;
+        this.config = config;
     }
 
     /**
@@ -46,7 +48,7 @@ public class StealingArtefactsOverlay extends Overlay {
             panelComponent.getChildren().add(LineComponent.builder().left(targetLine).build());
 
             // Artefacts to goal
-            if (plugin.artefactsToGoal > 0) {
+            if (plugin.artefactsToGoal > 0 && config.showToNextLevel()) {
                 panelComponent.getChildren().add(LineComponent.builder().build());
                 panelComponent.getChildren().add(LineComponent.builder().left("Artefacts until goal:").build());
                 panelComponent.getChildren().add(LineComponent.builder().left(String.valueOf(plugin.artefactsToGoal)).build());

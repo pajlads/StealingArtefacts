@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 
 @PluginDescriptor(
         name = "Stealing Artefacts",
@@ -54,6 +55,10 @@ public class StealingArtefactsPlugin extends Plugin {
     public HashSet<NPC> markedNPCs = new HashSet<>();
 
     public StealingArtefactsState currentState;
+
+    public boolean highlightPatrols = true;
+
+    public boolean showArtefactsToNextLevel = true;
 
     public NPC captainKhaled;
 
@@ -110,8 +115,7 @@ public class StealingArtefactsPlugin extends Plugin {
         if (!c.getGroup().equalsIgnoreCase(StealingArtefactsConfig.GROUP_NAME)) {
             return;
         }
-
-        loadConfig();
+        handleRefreshCurrentHouse();
     }
 
     /**
@@ -146,7 +150,9 @@ public class StealingArtefactsPlugin extends Plugin {
                 }
             }
         } else {
-            client.clearHintArrow();
+            if (isInPisc(client.getHintArrowPoint())) {
+                client.clearHintArrow();
+            }
         }
     }
 
@@ -162,24 +168,14 @@ public class StealingArtefactsPlugin extends Plugin {
     }
 
     /**
-     * If a game object we are marking changes, remove the previous and add the new one
-     * @param event The GameObjectChanged event
-     */
-    @Subscribe
-    public void onGameObjectChanged(GameObjectChanged event)
-    {
-        if(shouldMarkObject(event.getGameObject())) {
-            markedObject = event.getGameObject();
-        }
-    }
-
-    /**
      * Remove a game object if we currently have it marked when it despawns
      * @param event The GameObjectDespawned event
      */
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
-        markedObject = null;
+        if (event.getGameObject() != null && event.getGameObject().getId() == markedObject.getId()) {
+            markedObject = null;
+        }
     }
 
     /**
@@ -255,10 +251,7 @@ public class StealingArtefactsPlugin extends Plugin {
         }
     }
 
-    /**
-     * Load the user config
-     */
-    public void loadConfig() {
+    private void handleRefreshCurrentHouse() {
         final String stateGroup = StealingArtefactsConfig.GROUP_NAME + "." + client.getUsername();
         String configStateText = configManager.getConfiguration(stateGroup, StealingArtefactsConfig.CURRENT_STATE_KEY);
         if (configStateText != null) {
@@ -278,6 +271,12 @@ public class StealingArtefactsPlugin extends Plugin {
                 }
             }
         }
+    }
+    /**
+     * Load the user config
+     */
+    public void loadConfig() {
+        handleRefreshCurrentHouse();
     }
 
     /**
@@ -320,7 +319,7 @@ public class StealingArtefactsPlugin extends Plugin {
      * @return True if they are in Port Pisc, otherwise false
      */
     public boolean isInPisc(WorldPoint position) {
-        if (position.getX() >= 1739 && position.getX() <= 1855) {
+        if (position.getX() >= 1739 && position.getX() <= 1860) {
             return position.getY() >= 3675 && position.getY() <= 3803;
         }
 
