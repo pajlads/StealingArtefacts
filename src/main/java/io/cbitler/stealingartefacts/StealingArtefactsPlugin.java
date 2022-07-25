@@ -173,7 +173,7 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
-        if (event.getGameObject() != null && event.getGameObject().getId() == markedObject.getId()) {
+        if (event.getGameObject() != null && markedObject != null && event.getGameObject().getId() == markedObject.getId()) {
             markedObject = null;
         }
     }
