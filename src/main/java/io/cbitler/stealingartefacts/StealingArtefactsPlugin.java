@@ -115,6 +115,10 @@ public class StealingArtefactsPlugin extends Plugin {
             markedNPCs.clear();
             markedObjects.clear();
         }
+        if (e.getGameState() == GameState.LOGGED_IN && !(isInPisc(client.getLocalPlayer().getWorldLocation()))) {
+            markedNPCs.clear();
+            markedObjects.clear();
+        }
     }
     @Subscribe
     public void onConfigChanged(ConfigChanged c) {
