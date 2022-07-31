@@ -50,7 +50,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Inject
     private XpTrackerService xpTrackerService;
 
-    public GameObject markedObject;
+    public HashSet<GameObject> markedObjects = new HashSet<>();
 
     public HashSet<NPC> markedNPCs = new HashSet<>();
 
@@ -107,7 +107,7 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onGameStateChanged(GameStateChanged e) {
         if (e.getGameState() == GameState.LOGGING_IN || e.getGameState() == GameState.LOGIN_SCREEN || e.getGameState() == GameState.HOPPING) {
             markedNPCs.clear();
-            markedObject = null;
+            markedObjects.clear();
         }
     }
     @Subscribe
@@ -163,7 +163,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Subscribe
     public void onGameObjectSpawned(GameObjectSpawned event) {
         if (shouldMarkObject(event.getGameObject())) {
-            markedObject = event.getGameObject();
+            markedObjects.add(event.getGameObject());
         }
     }
 
@@ -173,8 +173,8 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
-        if (event.getGameObject() != null && markedObject != null && event.getGameObject().getId() == markedObject.getId()) {
-            markedObject = null;
+        if (event.getGameObject() != null && !markedObjects.isEmpty()) {
+            markedObjects.remove(event.getGameObject());
         }
     }
 
@@ -289,7 +289,9 @@ public class StealingArtefactsPlugin extends Plugin {
         if (currentState != null && currentState.getDrawerId() != -1) {
             isDrawer = object.getId() == currentState.getDrawerId();
         }
-
+        if (currentState != null && currentState.getLadderId() != -1 && (object.getWorldLocation().distanceTo(currentState.getLadderLocation()) == 0)) {
+            isDrawer = object.getId() == currentState.getLadderId();
+        }
         return isDrawer;
     }
 
