@@ -156,8 +156,10 @@ public class StealingArtefactsPlugin extends Plugin {
                 }
             }
         } else {
-            if (isInPisc(client.getHintArrowPoint())) {
-                client.clearHintArrow();
+            if (client.getHintArrowPoint() != null) {
+                if (isInPisc(client.getHintArrowPoint())) {
+                    client.clearHintArrow();
+                }
             }
         }
     }
