@@ -31,8 +31,10 @@ public enum StealingArtefactsState {
      * Create a state pointing at a specific house
      * @param target The string to show in the overlay as the target
      * @param drawerId The game object ID of the drawer
-     * @param drawerPlane The game object ID of the
+     * @param ladderId The game object ID of the ladder
+     * @param drawerPlane The plane level (z) of the drawer
      * @param hintLocation The hint location for the house
+     * @param ladderLocation The plane level (z) of the ladder
      */
     StealingArtefactsState(String target, int drawerId, int ladderId, int drawerPlane, WorldPoint hintLocation, WorldPoint ladderLocation) {
         this.target = target;

@@ -36,7 +36,7 @@ public class StealingArtefactsHouseOverlay extends Overlay {
     }
 
     /**
-     * Draw an overlay on the drawers for the minigame where applicable
+     * Draw an overlay on the drawers and ladders for the minigame where applicable
      * @param graphics The graphics to draw the overlay with
      * @return null, use OverlayUtil to render hoverable area
      */

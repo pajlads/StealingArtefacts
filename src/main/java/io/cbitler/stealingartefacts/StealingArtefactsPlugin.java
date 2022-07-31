@@ -286,7 +286,7 @@ public class StealingArtefactsPlugin extends Plugin {
     }
 
     /**
-     * Check if we should be marking this object - mainly if it is the target drawer
+     * Check if we should be marking this object - for both drawers and ladders
      * @param object The game object to check
      * @return True if we should mark it, false if we shouldn't.
      */
@@ -334,6 +334,11 @@ public class StealingArtefactsPlugin extends Plugin {
         return false;
     }
 
+    /**
+     * Check if the applicable guards is facing the lured direction
+     * @param guard The NPC object to check
+     * @return True if guard is facing correct position, otherwise false
+     */
     public boolean isGuardLured(NPC guard) {
         boolean isLured = false;
         if (guard.getWorldLocation().distanceTo(EAST_GUARD_POS) == 0 && guard.getCurrentOrientation() == Constants.SOUTH) {
