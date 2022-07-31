@@ -60,6 +60,12 @@ public class StealingArtefactsPlugin extends Plugin {
 
     public boolean showArtefactsToNextLevel = true;
 
+    public static final WorldPoint EAST_GUARD_POS = new WorldPoint(1777, 3746,0);
+    public static final WorldPoint SOUTHEAST_GUARD_POS = new WorldPoint(1780, 3731,0);
+    public boolean eastGuardLured = false;
+
+    public boolean southEastGuardLured = false;
+
     public NPC captainKhaled;
 
     public int artefactsToGoal = -1;
@@ -326,5 +332,24 @@ public class StealingArtefactsPlugin extends Plugin {
         }
 
         return false;
+    }
+
+    public boolean isGuardLured(NPC guard) {
+        boolean isLured = false;
+        if (guard.getWorldLocation().distanceTo(EAST_GUARD_POS) == 0 && guard.getCurrentOrientation() == Constants.SOUTH) {
+            isLured = true;
+            eastGuardLured = true;
+        } else if (guard.getWorldLocation().distanceTo(EAST_GUARD_POS) == 0) {
+            eastGuardLured = false;
+        }
+
+        if (guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS) == 0 && guard.getCurrentOrientation() == Constants.WEST) {
+            isLured = true;
+            southEastGuardLured = true;
+        } else if (guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS) == 0) {
+            southEastGuardLured = false;
+        }
+
+        return isLured;
     }
 }
