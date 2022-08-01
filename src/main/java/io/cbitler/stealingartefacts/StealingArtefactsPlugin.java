@@ -297,14 +297,14 @@ public class StealingArtefactsPlugin extends Plugin {
      * @return True if we should mark it, false if we shouldn't.
      */
     public boolean shouldMarkObject(GameObject object) {
-        boolean isDrawer = false;
+        boolean shouldMark = false;
         if (currentState != null && currentState.getDrawerId() != -1) {
-            isDrawer = object.getId() == currentState.getDrawerId();
+            shouldMark  = object.getId() == currentState.getDrawerId();
         }
         if (currentState != null && currentState.getLadderId() != -1 && (object.getWorldLocation().distanceTo(currentState.getLadderLocation()) == 0)) {
-            isDrawer = object.getId() == currentState.getLadderId();
+            shouldMark  = object.getId() == currentState.getLadderId();
         }
-        return isDrawer;
+        return shouldMark;
     }
 
     /**
@@ -347,17 +347,20 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     public boolean isGuardLured(NPC guard) {
         boolean isLured = false;
-        if (guard.getWorldLocation().distanceTo(EAST_GUARD_POS) == 0 && guard.getCurrentOrientation() == Constants.SOUTH) {
+        int eastGuardDistance = guard.getWorldLocation().distanceTo(EAST_GUARD_POS);
+        int southEastGuardDistance = guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS);
+
+        if (eastGuardDistance == 0 && guard.getCurrentOrientation() == Constants.SOUTH) {
             isLured = true;
             eastGuardLured = true;
-        } else if (guard.getWorldLocation().distanceTo(EAST_GUARD_POS) == 0) {
+        } else if (eastGuardDistance == 0) {
             eastGuardLured = false;
         }
 
-        if (guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS) == 0 && guard.getCurrentOrientation() == Constants.WEST) {
+        if (southEastGuardDistance == 0 && guard.getCurrentOrientation() == Constants.WEST) {
             isLured = true;
             southEastGuardLured = true;
-        } else if (guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS) == 0) {
+        } else if (southEastGuardDistance == 0) {
             southEastGuardLured = false;
         }
 

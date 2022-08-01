@@ -45,7 +45,7 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
         Point mousePosition = client.getMouseCanvasPosition();
         if (config.highlightPatrols()) {
             for (NPC actor : plugin.markedNPCs) {
-                if ((actor.getId() == Constants.PATROL_ID_MAX) && plugin.isGuardLured(actor)) {
+                if ((actor.getId() == Constants.PATROL_ID_MAX) && plugin.isGuardLured(actor) && config.highlightGuardLures()) {
                     OverlayUtil.renderHoverableArea(graphics, actor.getConvexHull(),
                             mousePosition, CLICKBOX_FILL_COLOR_LURED, CLICKBOX_BORDER, CLICKBOX_BORDER);
                 } else {

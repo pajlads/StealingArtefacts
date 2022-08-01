@@ -13,6 +13,8 @@ public interface StealingArtefactsConfig extends Config {
 
     String HIGHLIGHT_LADDERS = "highlightLadders";
 
+    String HIGHLIGHT_GUARD_LURES = "highlightGuardLures";
+
     String SHOW_TO_NEXT_LEVEL = "showToNextLevel";
 
     @ConfigItem(
@@ -38,6 +40,13 @@ public interface StealingArtefactsConfig extends Config {
             description = "Whether or not to highlight house ladders"
     )
     default boolean highlightLadders() { return true; }
+
+    @ConfigItem(
+            keyName = HIGHLIGHT_GUARD_LURES,
+            name = "Highlight Lured Guards",
+            description = "Whether or not to highlight guards when lured/positioned correctly"
+    )
+    default boolean highlightGuardLures() { return true; }
 
     @ConfigItem(
             keyName = SHOW_TO_NEXT_LEVEL,
