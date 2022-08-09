@@ -50,7 +50,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Inject
     private XpTrackerService xpTrackerService;
 
-    public GameObject markedObject;
+    public HashSet<GameObject> markedObjects = new HashSet<>();
 
     public HashSet<NPC> markedNPCs = new HashSet<>();
 
@@ -59,6 +59,12 @@ public class StealingArtefactsPlugin extends Plugin {
     public boolean highlightPatrols = true;
 
     public boolean showArtefactsToNextLevel = true;
+
+    public static final WorldPoint EAST_GUARD_POS = new WorldPoint(1777, 3746,0);
+    public static final WorldPoint SOUTHEAST_GUARD_POS = new WorldPoint(1780, 3731,0);
+    public boolean eastGuardLured = false;
+
+    public boolean southEastGuardLured = false;
 
     public NPC captainKhaled;
 
@@ -107,7 +113,11 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onGameStateChanged(GameStateChanged e) {
         if (e.getGameState() == GameState.LOGGING_IN || e.getGameState() == GameState.LOGIN_SCREEN || e.getGameState() == GameState.HOPPING) {
             markedNPCs.clear();
-            markedObject = null;
+            markedObjects.clear();
+        }
+        if (e.getGameState() == GameState.LOGGED_IN && !(isInPisc(client.getLocalPlayer().getWorldLocation()))) {
+            markedNPCs.clear();
+            markedObjects.clear();
         }
     }
     @Subscribe
@@ -150,8 +160,10 @@ public class StealingArtefactsPlugin extends Plugin {
                 }
             }
         } else {
-            if (isInPisc(client.getHintArrowPoint())) {
-                client.clearHintArrow();
+            if (client.getHintArrowPoint() != null) {
+                if (isInPisc(client.getHintArrowPoint())) {
+                    client.clearHintArrow();
+                }
             }
         }
     }
@@ -163,7 +175,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Subscribe
     public void onGameObjectSpawned(GameObjectSpawned event) {
         if (shouldMarkObject(event.getGameObject())) {
-            markedObject = event.getGameObject();
+            markedObjects.add(event.getGameObject());
         }
     }
 
@@ -173,8 +185,8 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
-        if (event.getGameObject() != null && markedObject != null && event.getGameObject().getId() == markedObject.getId()) {
-            markedObject = null;
+        if (event.getGameObject() != null && !markedObjects.isEmpty()) {
+            markedObjects.remove(event.getGameObject());
         }
     }
 
@@ -280,17 +292,19 @@ public class StealingArtefactsPlugin extends Plugin {
     }
 
     /**
-     * Check if we should be marking this object - mainly if it is the target drawer
+     * Check if we should be marking this object - for both drawers and ladders
      * @param object The game object to check
      * @return True if we should mark it, false if we shouldn't.
      */
     public boolean shouldMarkObject(GameObject object) {
-        boolean isDrawer = false;
+        boolean shouldMark = false;
         if (currentState != null && currentState.getDrawerId() != -1) {
-            isDrawer = object.getId() == currentState.getDrawerId();
+            shouldMark  = object.getId() == currentState.getDrawerId();
         }
-
-        return isDrawer;
+        if (currentState != null && currentState.getLadderId() != -1 && (object.getWorldLocation().distanceTo(currentState.getLadderLocation()) == 0)) {
+            shouldMark  = object.getId() == currentState.getLadderId();
+        }
+        return shouldMark;
     }
 
     /**
@@ -324,5 +338,32 @@ public class StealingArtefactsPlugin extends Plugin {
         }
 
         return false;
+    }
+
+    /**
+     * Check if the applicable guards is facing the lured direction
+     * @param guard The NPC object to check
+     * @return True if guard is facing correct position, otherwise false
+     */
+    public boolean isGuardLured(NPC guard) {
+        boolean isLured = false;
+        int eastGuardDistance = guard.getWorldLocation().distanceTo(EAST_GUARD_POS);
+        int southEastGuardDistance = guard.getWorldLocation().distanceTo(SOUTHEAST_GUARD_POS);
+
+        if (eastGuardDistance == 0 && guard.getCurrentOrientation() == Constants.SOUTH) {
+            isLured = true;
+            eastGuardLured = true;
+        } else if (eastGuardDistance == 0) {
+            eastGuardLured = false;
+        }
+
+        if (southEastGuardDistance == 0 && guard.getCurrentOrientation() == Constants.WEST) {
+            isLured = true;
+            southEastGuardLured = true;
+        } else if (southEastGuardDistance == 0) {
+            southEastGuardLured = false;
+        }
+
+        return isLured;
     }
 }
