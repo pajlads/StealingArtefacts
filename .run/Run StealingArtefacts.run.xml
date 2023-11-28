@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run StealingArtefacts" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.jdks/openjdk-20.0.1" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="io.cbitler.stealingartefacts.StealingArtefactsPluginTest" />
+    <module name="Stealing_Artefacts.test" />
+    <option name="PROGRAM_PARAMETERS" value="--debug --developer-mode" />
+    <option name="VM_PARAMETERS" value="-ea --illegal-access=warn --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
