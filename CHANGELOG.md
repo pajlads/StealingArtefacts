@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Dev: Rewrite build.gradle into Kotlin DSL script. (#2)
+
 ## 1.2
 
 - Fix: Highlights not being cleared - thanks @aturnerr
