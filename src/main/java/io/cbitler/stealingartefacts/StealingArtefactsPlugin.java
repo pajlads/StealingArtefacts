@@ -100,6 +100,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     /**
      * Specify our config
+     *
      * @param configManager The Runelite Config manager
      * @return The configuration for this plugin
      */
@@ -181,6 +182,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     /**
      * Remove a game object if we currently have it marked when it despawns
+     *
      * @param event The GameObjectDespawned event
      */
     @Subscribe
@@ -192,6 +194,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     /**
      * Capture npc spawns for Captain Khaled and Patrolmen/women
+     *
      * @param event The NPCSpawned event
      */
     @Subscribe
@@ -207,6 +210,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     /**
      * Handle NPCs despawning (Captain Khaled, Patrolmen/women)
+     *
      * @param event The NPCDespawned event
      */
     @Subscribe
@@ -224,7 +228,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
     /**
      * Handle the stealing artefacts varbit change
-     * TODO: Change to use Varbit in Runelite API once added
+     *
      * @param event The VarbitChanged event
      */
     @Subscribe

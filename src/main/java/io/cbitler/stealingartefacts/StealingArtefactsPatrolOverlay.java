@@ -37,6 +37,7 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
 
     /**
      * Overlay the patrol-people on the same plane as the player
+     *
      * @param graphics The graphics to draw the overlay with
      * @return null, use OverlayUtil to draw overlay
      */
