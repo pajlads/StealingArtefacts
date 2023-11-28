@@ -1,6 +1,8 @@
 package io.cbitler.stealingartefacts;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.runelite.api.ObjectID;
 import net.runelite.api.coords.WorldPoint;
 
@@ -8,8 +10,9 @@ import net.runelite.api.coords.WorldPoint;
  * Enum representing the current state of the minigame for the player
  */
 @Getter
+@RequiredArgsConstructor
 public enum StealingArtefactsState {
-    NO_TASK(""),
+    NO_TASK("None"),
     NORTHERN("Northern house", ObjectID.DRAWERS_27771, ObjectID.LADDER_27634, 0, new WorldPoint(1768, 3750, 0), new WorldPoint(0, 0, 0)),
     SOUTHEASTERN("South-Eastern house", ObjectID.DRAWERS_27772, ObjectID.LADDER_27634, 1, new WorldPoint(1775, 3733, 1), new WorldPoint(1776, 3730, 0)),
     SOUTHERN("Southern house", ObjectID.DRAWERS_27773, ObjectID.LADDER_27634, 1, new WorldPoint(1765, 3732, 1), new WorldPoint(1768, 3733, 0)),
@@ -28,28 +31,11 @@ public enum StealingArtefactsState {
     private final WorldPoint ladderLocation;
 
     /**
-     * Create a state pointing at a specific house
-     * @param target The string to show in the overlay as the target
-     * @param drawerId The game object ID of the drawer
-     * @param ladderId The game object ID of the ladder
-     * @param drawerPlane The plane level (z) of the drawer
-     * @param hintLocation The hint location for the house
-     * @param ladderLocation The plane level (z) of the ladder
-     */
-    StealingArtefactsState(String target, int drawerId, int ladderId, int drawerPlane, WorldPoint hintLocation, WorldPoint ladderLocation) {
-        this.target = target;
-        this.drawerId = drawerId;
-        this.ladderId = ladderId;
-        this.drawerPlane = drawerPlane;
-        this.hintLocation = hintLocation;
-        this.ladderLocation = ladderLocation;
-    }
-
-    /**
      * Create a state for states that aren't a specific house
+     *
      * @param target The string to show in the overlay as the target
      */
-    StealingArtefactsState(String target) {
+    StealingArtefactsState(@NonNull String target) {
         this.target = target;
         drawerId = -1;
         ladderId = -1;

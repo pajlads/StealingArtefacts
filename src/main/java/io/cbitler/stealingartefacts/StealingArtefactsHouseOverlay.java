@@ -43,12 +43,13 @@ public class StealingArtefactsHouseOverlay extends Overlay {
      */
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.currentState == null) {
+        var currentTaskState = plugin.taskState.get();
+        if (currentTaskState == null) {
             return null;
         }
 
         Point mousePosition = client.getMouseCanvasPosition();
-        for (GameObject object : plugin.markedObjects) {
+        for (var object : plugin.markedObjects) {
             if (object.getId() == ObjectID.LADDER_27634 && !(config.highlightLadders())) {
                 continue;
             }
