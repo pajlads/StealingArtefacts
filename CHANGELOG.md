@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Minor: Add a plugin hub icon of Captain Khaled, the face of artefact stealing. (#1)
 - Dev: Rewrite build.gradle into Kotlin DSL script. (#2)
 
 ## 1.2
