@@ -253,7 +253,9 @@ public class StealingArtefactsPlugin extends Plugin {
             }
             markedObjects.clear();
         } else {
-            client.setHintArrow(state.getHintLocation());
+            if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
+                client.setHintArrow(state.getHintLocation());
+            }
         }
     }
 
