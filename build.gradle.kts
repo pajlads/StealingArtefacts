@@ -43,7 +43,7 @@ version = "1.2"
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    val version = "1.8"
+    val version = JavaVersion.VERSION_11.toString()
     sourceCompatibility = version
     targetCompatibility = version
 }
