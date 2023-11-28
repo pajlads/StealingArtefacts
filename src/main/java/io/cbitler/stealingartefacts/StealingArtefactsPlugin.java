@@ -246,10 +246,12 @@ public class StealingArtefactsPlugin extends Plugin {
                     client.clearHintArrow();
                 }
             }
+            markedObjects.clear();
         } else if (state == StealingArtefactsState.NO_TASK) {
             if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
                 client.clearHintArrow();
             }
+            markedObjects.clear();
         } else {
             client.setHintArrow(state.getHintLocation());
         }
@@ -278,6 +280,7 @@ public class StealingArtefactsPlugin extends Plugin {
                     if (captainKhaled != null) {
                         client.setHintArrow(captainKhaled);
                     }
+                    markedObjects.clear();
                 } else if (currentState != StealingArtefactsState.NO_TASK) {
                     client.setHintArrow(currentState.getHintLocation());
                 }
