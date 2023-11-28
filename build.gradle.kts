@@ -51,3 +51,28 @@ tasks.withType<JavaCompile> {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.register(name = "shadowJar", type = Jar::class) {
+    dependsOn(configurations.testRuntimeClasspath)
+    manifest {
+        attributes(mapOf("Main-Class" to "io.cbitler.stealingartefacts.StealingArtefactsPluginTest"))
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.get().output)
+    from(sourceSets.test.get().output)
+    from({
+        configurations.testRuntimeClasspath.get().map {
+            if (it.isDirectory) it else zipTree(it)
+        }
+    })
+    exclude("META-INF/INDEX.LIST")
+    exclude("META-INF/*.SF")
+    exclude("META-INF/*.DSA")
+    exclude("META-INF/*.RSA")
+    exclude("**/module-info.class")
+
+    group = BasePlugin.BUILD_GROUP
+    archiveClassifier.set("shadow")
+    archiveFileName.set(rootProject.name + "-" + project.version + "-all.jar")
+}

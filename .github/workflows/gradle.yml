@@ -28,3 +28,12 @@ jobs:
 
       - name: Execute Gradle build
         run: ./gradlew build
+
+      - name: Build shadowJar
+        run: ./gradlew shadowJar
+
+      - name: Upload shadowJar
+        uses: actions/upload-artifact@v3
+        with:
+          name: stealing-artefacts-shadow
+          path: build/libs/*-all.jar
