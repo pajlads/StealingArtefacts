@@ -39,7 +39,7 @@ public class StealingArtefactsOverlay extends Overlay {
 
         panelComponent.getChildren().clear();
         String title = "Stealing Artefacts";
-        String targetLine = getTargetMessage(plugin.taskState);
+        String targetLine = plugin.taskState != null ? plugin.taskState.getTarget() : "None";
 
         // Title
         panelComponent.getChildren().add(TitleComponent.builder().text(title).color(Color.YELLOW).build());
@@ -78,19 +78,5 @@ public class StealingArtefactsOverlay extends Overlay {
 
         panelComponent.setPreferredSize(new Dimension(200, 0));
         return panelComponent.render(graphics);
-    }
-
-    /**
-     * Get the target message based on the state
-     *
-     * @param state The current minigame state
-     * @return The string to display as the target, either 'None' or the target message
-     */
-    private String getTargetMessage(StealingArtefactsState state) {
-        if (state == null) {
-            return "None";
-        }
-
-        return state.getTarget();
     }
 }

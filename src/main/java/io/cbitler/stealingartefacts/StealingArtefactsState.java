@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.runelite.api.ObjectID;
 import net.runelite.api.coords.WorldPoint;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Enum representing the current state of the minigame for the player
@@ -27,8 +28,8 @@ public enum StealingArtefactsState {
     private final int drawerId;
     private final int ladderId;
     private final int drawerPlane;
-    private final WorldPoint hintLocation;
-    private final WorldPoint ladderLocation;
+    private final @Nullable WorldPoint hintLocation;
+    private final @Nullable WorldPoint ladderLocation;
 
     /**
      * Create a state for states that aren't a specific house

@@ -88,6 +88,7 @@ public class StealingArtefactsPlugin extends Plugin {
         }
 
         gameState.lazySet(null);
+        reset();
     }
 
     /**
@@ -247,13 +248,13 @@ public class StealingArtefactsPlugin extends Plugin {
 
         var localPlayer = client.getLocalPlayer();
         if (localPlayer == null) {
-            log.debug("local player not loaded yet");
             return;
         }
 
         switch (newState) {
             case NO_TASK:
                 if (isInPisc(localPlayer.getWorldLocation())) {
+                    // NOTE: This is not technically 100% safe
                     client.clearHintArrow();
                 }
                 reset();
@@ -266,14 +267,7 @@ public class StealingArtefactsPlugin extends Plugin {
             case WESTERN:
             case NORTHWESTERN:
                 if (isInPisc(localPlayer.getWorldLocation())) {
-                    var hintLocation = newState.getHintLocation();
-                    if (hintLocation != null) {
-                        client.setHintArrow(newState.getHintLocation());
-                    } else {
-                        log.warn("Invalid hint location from {}", newState);
-                    }
-                } else {
-                    log.debug("Player not in pisc, don't update anything");
+                    client.setHintArrow(newState.getHintLocation());
                 }
                 break;
 
@@ -285,8 +279,6 @@ public class StealingArtefactsPlugin extends Plugin {
                     } else {
                         client.setHintArrow(CAPTAIN_KHALED_ROUGH_POS);
                     }
-                } else {
-                    log.debug("Player not in pisc, don't update anything");
                 }
                 break;
         }

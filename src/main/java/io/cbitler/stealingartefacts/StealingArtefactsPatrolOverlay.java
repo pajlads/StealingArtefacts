@@ -41,7 +41,7 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
      */
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (!config.highlightPatrols()) {
+        if (!config.highlightPatrols() || !plugin.isPlayerInPisc()) {
             return null;
         }
 

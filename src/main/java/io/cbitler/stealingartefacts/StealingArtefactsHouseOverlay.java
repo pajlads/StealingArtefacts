@@ -43,7 +43,7 @@ public class StealingArtefactsHouseOverlay extends Overlay {
      */
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.taskState == null) {
+        if (plugin.taskState == null || !plugin.isPlayerInPisc()) {
             return null;
         }
 
