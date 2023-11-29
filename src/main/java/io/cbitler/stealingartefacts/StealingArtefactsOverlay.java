@@ -61,19 +61,19 @@ public class StealingArtefactsOverlay extends Overlay {
 
             String eastGuardLured = plugin.eastGuardLured ? "\u2713" : "\u2717";
             panelComponent.getChildren().add(LineComponent.builder()
-                    .left("Eastern Guard")
-                    .right(eastGuardLured)
-                    .rightFont(FontManager.getDefaultFont())
-                    .rightColor(plugin.eastGuardLured ? Color.GREEN : Color.RED)
-                    .build());
+                .left("Eastern Guard")
+                .right(eastGuardLured)
+                .rightFont(FontManager.getDefaultFont())
+                .rightColor(plugin.eastGuardLured ? Color.GREEN : Color.RED)
+                .build());
 
             String southEastGuardLured = plugin.southEastGuardLured ? "\u2713" : "\u2717";
             panelComponent.getChildren().add(LineComponent.builder()
-                    .left("South-East Guard")
-                    .right(southEastGuardLured)
-                    .rightFont(FontManager.getDefaultFont())
-                    .rightColor(plugin.southEastGuardLured ? Color.GREEN : Color.RED)
-                    .build());
+                .left("South-East Guard")
+                .right(southEastGuardLured)
+                .rightFont(FontManager.getDefaultFont())
+                .rightColor(plugin.southEastGuardLured ? Color.GREEN : Color.RED)
+                .build());
         }
 
         panelComponent.setPreferredSize(new Dimension(200, 0));

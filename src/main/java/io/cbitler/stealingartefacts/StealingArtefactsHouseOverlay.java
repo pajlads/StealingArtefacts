@@ -54,7 +54,7 @@ public class StealingArtefactsHouseOverlay extends Overlay {
             }
             if (client.getPlane() == object.getWorldLocation().getPlane()) {
                 OverlayUtil.renderHoverableArea(graphics, object.getClickbox(), mousePosition, CLICKBOX_FILL_COLOR,
-                        CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
+                    CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
             }
         }
 

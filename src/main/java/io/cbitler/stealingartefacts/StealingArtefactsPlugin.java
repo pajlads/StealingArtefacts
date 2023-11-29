@@ -21,9 +21,9 @@ import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 @PluginDescriptor(
-        name = "Stealing Artefacts",
-        description = "Show the current house for stealing artefacts",
-        tags = {}
+    name = "Stealing Artefacts",
+    description = "Show the current house for stealing artefacts",
+    tags = {}
 )
 @PluginDependency(XpTrackerPlugin.class)
 @Slf4j
