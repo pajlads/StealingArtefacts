@@ -83,6 +83,7 @@ public class StealingArtefactsPlugin extends Plugin {
         this.overlayManager.remove(patrolOverlay);
 
         if (isPlayerInPisc()) {
+            // NOTE: This is not technically 100% safe
             client.clearHintArrow();
         }
 
@@ -114,11 +115,9 @@ public class StealingArtefactsPlugin extends Plugin {
 
         var previousState = gameState.getAndSet(newState);
         if (newState == previousState) {
-            log.debug("Ignoring same state previous={} == new={}", previousState, newState);
             return;
         }
 
-        log.debug("Game state changed to: {}", newState);
         if (newState != GameState.HOPPING && newState != GameState.LOGGED_IN) {
             reset();
         }
@@ -178,9 +177,7 @@ public class StealingArtefactsPlugin extends Plugin {
     @Subscribe
     public void onGameObjectDespawned(GameObjectDespawned event) {
         if (event.getGameObject() != null) {
-            if (markedObjects.remove(event.getGameObject())) {
-                log.info("Removed previously marked object");
-            }
+            markedObjects.remove(event.getGameObject());
         }
     }
 
@@ -239,15 +236,9 @@ public class StealingArtefactsPlugin extends Plugin {
         }
     }
 
-    private void resetMarkedNPCs() {
-        log.debug("Resetting marked NPCs");
-        markedNPCs.clear();
-    }
-
     private void reset() {
-        log.debug("Resetting");
-        resetMarkedNPCs();
-        this.markedObjects.clear();
+        markedNPCs.clear();
+        markedObjects.clear();
     }
 
     private void updateTaskVarbit(int value) {
