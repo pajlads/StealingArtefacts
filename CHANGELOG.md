@@ -4,6 +4,7 @@
 - Dev: Update Java source & target compatibility to 11. (#3)
 - Dev: Rewrite build.gradle into Kotlin DSL script. (#2)
 - Dev: Add shadow jar support. (#4, #6)
+- Dev: Add changelog checker CI job. (#7)
 
 ## 1.2
 
