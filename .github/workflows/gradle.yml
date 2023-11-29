@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: stealing-artefacts-shadow
-          path: build/libs/*-all.jar
+          path: build/libs/stealing-artefacts-*-all.jar
