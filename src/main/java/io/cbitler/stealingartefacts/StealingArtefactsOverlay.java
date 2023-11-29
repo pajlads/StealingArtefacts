@@ -39,8 +39,7 @@ public class StealingArtefactsOverlay extends Overlay {
 
         panelComponent.getChildren().clear();
         String title = "Stealing Artefacts";
-        var currentTaskState = plugin.taskState.get();
-        String targetLine = getTargetMessage(currentTaskState);
+        String targetLine = getTargetMessage(plugin.taskState);
 
         // Title
         panelComponent.getChildren().add(TitleComponent.builder().text(title).color(Color.YELLOW).build());

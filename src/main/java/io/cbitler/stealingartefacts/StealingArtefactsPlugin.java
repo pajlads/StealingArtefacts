@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -30,26 +31,25 @@ public class StealingArtefactsPlugin extends Plugin {
     public static final WorldPoint EAST_GUARD_POS = new WorldPoint(1777, 3746, 0);
     public static final WorldPoint SOUTHEAST_GUARD_POS = new WorldPoint(1780, 3731, 0);
     public static final WorldPoint CAPTAIN_KHALED_ROUGH_POS = new WorldPoint(1845, 3751, 0);
-    public final AtomicReference<StealingArtefactsState> taskState = new AtomicReference<>();
     private final AtomicReference<GameState> gameState = new AtomicReference<>();
+    public @Nullable StealingArtefactsState taskState = null;
     public HashSet<TileObject> markedObjects = new HashSet<>();
     public HashSet<NPC> markedNPCs = new HashSet<>();
     public boolean eastGuardLured = false;
     public boolean southEastGuardLured = false;
     public NPC captainKhaled = null;
+
+    /**
+     * Stores the last calculated number of artefacts to reach your xp goal
+     */
     public int artefactsToGoal = -1;
-    @Inject
-    private OverlayManager overlayManager;
-    @Inject
-    private StealingArtefactsOverlay overlay;
-    @Inject
-    private StealingArtefactsHouseOverlay houseOverlay;
-    @Inject
-    private StealingArtefactsPatrolOverlay patrolOverlay;
-    @Inject
-    private Client client;
-    @Inject
-    private XpTrackerService xpTrackerService;
+    private @Inject OverlayManager overlayManager;
+    private @Inject StealingArtefactsOverlay overlay;
+    private @Inject StealingArtefactsHouseOverlay houseOverlay;
+    private @Inject StealingArtefactsPatrolOverlay patrolOverlay;
+    private @Inject Client client;
+    private @Inject ClientThread clientThread;
+    private @Inject XpTrackerService xpTrackerService;
 
     /**
      * Set to true when the plugin needs to check game objects to overlay
@@ -65,6 +65,12 @@ public class StealingArtefactsPlugin extends Plugin {
         this.overlayManager.add(overlay);
         this.overlayManager.add(houseOverlay);
         this.overlayManager.add(patrolOverlay);
+
+        if (client.getGameState() == GameState.LOGGED_IN) {
+            clientThread.invokeLater(() -> {
+                updateTaskVarbit(client.getVarbitValue(Constants.STEALING_ARTEFACTS_VARBIT));
+            });
+        }
     }
 
     /**
@@ -187,8 +193,7 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onNpcSpawned(NpcSpawned event) {
         if (event.getNpc().getId() == NpcID.CAPTAIN_KHALED_6972) {
             captainKhaled = event.getNpc();
-            var currentTaskState = taskState.get();
-            if (currentTaskState == StealingArtefactsState.DELIVER_ARTEFACT || currentTaskState == StealingArtefactsState.FAILURE) {
+            if (taskState == StealingArtefactsState.DELIVER_ARTEFACT || taskState == StealingArtefactsState.FAILURE) {
                 client.setHintArrow(captainKhaled);
             }
         }
@@ -219,9 +224,7 @@ public class StealingArtefactsPlugin extends Plugin {
         var npc = event.getNpc();
 
         if (npc == captainKhaled) {
-            var currentTaskState = taskState.get();
-
-            if ((currentTaskState == StealingArtefactsState.DELIVER_ARTEFACT || currentTaskState == StealingArtefactsState.FAILURE) && isPlayerInPisc()) {
+            if ((taskState == StealingArtefactsState.DELIVER_ARTEFACT || taskState == StealingArtefactsState.FAILURE) && isPlayerInPisc()) {
                 // Player is in pisc & the current task state is to talk to Khaled
                 // Since we can't highlight the NPC, highlight the NPCs rough position
                 client.setHintArrow(CAPTAIN_KHALED_ROUGH_POS);
@@ -247,28 +250,9 @@ public class StealingArtefactsPlugin extends Plugin {
         this.markedObjects.clear();
     }
 
-    /**
-     * Handle the stealing artefacts varbit change
-     *
-     * @param event The VarbitChanged event
-     */
-    @Subscribe
-    public void onVarbitChanged(VarbitChanged event) {
-        if (client.getGameState() != GameState.LOGGED_IN) {
-            log.warn("varbit changed when not logged in");
-            return;
-        }
-
-        if (event.getVarbitId() != Constants.STEALING_ARTEFACTS_VARBIT) {
-            return;
-        }
-
-        var newState = StealingArtefactsState.values()[client.getVarbitValue(Constants.STEALING_ARTEFACTS_VARBIT)];
-        var prevState = taskState.getAndSet(newState);
-        if (newState == prevState) {
-            log.warn("New state is same as previous state {} - do nothing", newState);
-            return;
-        }
+    private void updateTaskVarbit(int value) {
+        var newState = StealingArtefactsState.values()[value];
+        taskState = newState;
 
         var localPlayer = client.getLocalPlayer();
         if (localPlayer == null) {
@@ -317,6 +301,18 @@ public class StealingArtefactsPlugin extends Plugin {
         }
     }
 
+    /**
+     * Handle the stealing artefacts varbit change
+     *
+     * @param event The VarbitChanged event
+     */
+    @Subscribe
+    public void onVarbitChanged(VarbitChanged event) {
+        if (event.getVarbitId() == Constants.STEALING_ARTEFACTS_VARBIT) {
+            updateTaskVarbit(event.getValue());
+        }
+    }
+
     @Subscribe
     public void onStatChanged(StatChanged e) {
         if (e.getSkill() != Skill.THIEVING) {
@@ -345,17 +341,16 @@ public class StealingArtefactsPlugin extends Plugin {
         if (object == null) {
             return false;
         }
-        var currentTaskState = taskState.get();
-        if (currentTaskState == null) {
+        if (taskState == null) {
             return false;
         }
 
         boolean shouldMark = false;
-        if (currentTaskState.getDrawerId() != -1) {
-            shouldMark = object.getId() == currentTaskState.getDrawerId();
+        if (taskState.getDrawerId() != -1) {
+            shouldMark = object.getId() == taskState.getDrawerId();
         }
-        if (currentTaskState.getLadderId() != -1 && (object.getWorldLocation().distanceTo(currentTaskState.getLadderLocation()) == 0)) {
-            shouldMark = object.getId() == currentTaskState.getLadderId();
+        if (taskState.getLadderId() != -1 && (object.getWorldLocation().distanceTo(taskState.getLadderLocation()) == 0)) {
+            shouldMark = object.getId() == taskState.getLadderId();
         }
         return shouldMark;
     }
