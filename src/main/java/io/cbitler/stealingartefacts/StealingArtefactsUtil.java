@@ -12,7 +12,8 @@ import net.runelite.client.plugins.xptracker.XpTrackerService;
 public class StealingArtefactsUtil {
     /**
      * Get the number of artefacts to next level
-     * @param client The runelite client
+     *
+     * @param client  The runelite client
      * @param service XPTracker service
      * @return The number of artefacts until the next level, rounded up
      */
@@ -22,6 +23,6 @@ public class StealingArtefactsUtil {
         double goalXp = service.getEndGoalXp(Skill.THIEVING);
         double remainingXp = goalXp - currentXp;
 
-        return (int) Math.ceil(remainingXp / (750 + (40*currentLevel)));
+        return (int) Math.ceil(remainingXp / (750 + (40 * currentLevel)));
     }
 }

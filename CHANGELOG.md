@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Major: Remove deprecated API usages & try to be smarted about highlighting objects/NPCs. (#5)
 - Minor: Add a plugin hub icon of Captain Khaled, the face of artefact stealing. (#1)
 - Dev: Update Java source & target compatibility to 11. (#3)
 - Dev: Rewrite build.gradle into Kotlin DSL script. (#2)

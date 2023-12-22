@@ -37,23 +37,24 @@ public class StealingArtefactsHouseOverlay extends Overlay {
 
     /**
      * Draw an overlay on the drawers and ladders for the minigame where applicable
+     *
      * @param graphics The graphics to draw the overlay with
      * @return null, use OverlayUtil to render hoverable area
      */
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.currentState == null) {
+        if (plugin.taskState == null || !plugin.isPlayerInPisc()) {
             return null;
         }
 
         Point mousePosition = client.getMouseCanvasPosition();
-        for (GameObject object : plugin.markedObjects) {
+        for (var object : plugin.markedObjects) {
             if (object.getId() == ObjectID.LADDER_27634 && !(config.highlightLadders())) {
                 continue;
             }
             if (client.getPlane() == object.getWorldLocation().getPlane()) {
                 OverlayUtil.renderHoverableArea(graphics, object.getClickbox(), mousePosition, CLICKBOX_FILL_COLOR,
-                        CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
+                    CLICKBOX_BORDER, CLICKBOX_HOVER_BORDER);
             }
         }
 
