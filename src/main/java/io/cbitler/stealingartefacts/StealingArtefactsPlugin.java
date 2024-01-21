@@ -201,7 +201,6 @@ public class StealingArtefactsPlugin extends Plugin {
         }
         if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
             markedNPCs.add(event.getNpc());
-            log.debug("NPC Spawned: {} Index: {}", event.getNpc().getName(), event.getNpc().getId());
         }
     }
 
@@ -218,7 +217,6 @@ public class StealingArtefactsPlugin extends Plugin {
             }
         }
 
-        log.debug("NPC Spawned: {} Index: {}", event.getNpc().getName(), event.getNpc().getId());
         markedNPCs.remove(event.getNpc());
     }
 
@@ -263,7 +261,6 @@ public class StealingArtefactsPlugin extends Plugin {
     public void onStatChanged(StatChanged e) {
         if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
             artefactsToGoal = StealingArtefactsUtil.artefactsToNextLevel(client, xpTrackerService);
-            log.debug("Artefacts to goal: {}", artefactsToGoal);
         }
     }
 

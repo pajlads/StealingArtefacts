@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Minor: Add a plugin hub icon of Captain Khaled, the face of artefact stealing. (#1)
+- Dev: Removed a bunch of `log.debug` spam. (#13)
 - Dev: Update Java source & target compatibility to 11. (#3)
 - Dev: Rewrite build.gradle into Kotlin DSL script. (#2)
 - Dev: Add shadow jar support. (#4, #6)
