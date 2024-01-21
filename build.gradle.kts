@@ -39,7 +39,7 @@ dependencies {
 }
 
 group = "io.cbitler.stealingartefacts"
-version = "1.2"
+version = "1.3"
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
