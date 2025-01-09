@@ -53,4 +53,5 @@ public interface StealingArtefactsConfig extends Config {
             name = "Show artefacts to next level",
             description = "Whether or not to show artefacts to next level"
     )
-    default boolean showToNextLevel() { return true; }}
+    default boolean showToNextLevel() { return true; }
+}
