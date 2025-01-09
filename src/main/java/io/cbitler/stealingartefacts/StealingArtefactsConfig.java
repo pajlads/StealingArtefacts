@@ -54,4 +54,13 @@ public interface StealingArtefactsConfig extends Config {
             description = "Whether or not to show artefacts to next level"
     )
     default boolean showToNextLevel() { return true; }
+
+    @ConfigItem(
+            keyName = "showOverlay",
+            name = "Show overlay",
+            description = "Uncheck this to hide the overlay"
+    )
+    default boolean showOverlay() {
+        return true;
+    }
 }
