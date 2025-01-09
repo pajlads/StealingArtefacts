@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Minor: Add a config for toggling the overlay. (#22)
+
 ## 1.3
 
 - Minor: Add a plugin hub icon of Captain Khaled, the face of artefact stealing. (#1)
