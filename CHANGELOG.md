@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.4
+
 - Minor: Add a config for toggling the overlay. (#22)
 
 ## 1.3
