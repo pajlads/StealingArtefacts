@@ -36,6 +36,10 @@ public class StealingArtefactsOverlay extends Overlay {
      */
     @Override
     public Dimension render(Graphics2D graphics) {
+        if (!config.showOverlay()) {
+            return null;
+        }
+
         if (client.getLocalPlayer() != null && plugin.isInPisc(client.getLocalPlayer().getWorldLocation())) {
             panelComponent.getChildren().clear();
             String title = "Stealing Artefacts";
