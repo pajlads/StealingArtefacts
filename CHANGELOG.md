@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Minor: Khaled can now have a highlight if you don't have a task active. (#26)
+
 ## 1.4
 
 - Minor: Add a config for toggling the overlay. (#22)
