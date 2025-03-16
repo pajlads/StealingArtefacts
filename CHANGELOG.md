@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Minor: Khaled can now have a highlight if you don't have a task active. (#26)
+- Fix: Fixed an issue where Captain Khaled did not always get the arrow pointing to him. (#25)
 
 ## 1.4
 
