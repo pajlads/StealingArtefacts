@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.5
+
 - Minor: Add an option for only showing unlured guards in the overlay. (#24)
 - Minor: Khaled can now have a highlight if you don't have a task active. (#26)
 - Fix: Fixed an issue where Captain Khaled did not always get the arrow pointing to him. (#25)
