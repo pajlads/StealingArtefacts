@@ -43,6 +43,9 @@ public class StealingArtefactsPlugin extends Plugin {
     private StealingArtefactsPatrolOverlay patrolOverlay;
 
     @Inject
+    private StealingArtefactsKhaledOverlay khaledOverlay;
+
+    @Inject
     private Client client;
 
     @Inject
@@ -78,6 +81,8 @@ public class StealingArtefactsPlugin extends Plugin {
         this.overlayManager.add(overlay);
         this.overlayManager.add(houseOverlay);
         this.overlayManager.add(patrolOverlay);
+        this.overlayManager.add(khaledOverlay);
+
         if (client.getGameState() == GameState.LOGGED_IN)
         {
             loadConfig();
@@ -92,6 +97,7 @@ public class StealingArtefactsPlugin extends Plugin {
         this.overlayManager.remove(overlay);
         this.overlayManager.remove(houseOverlay);
         this.overlayManager.remove(patrolOverlay);
+        this.overlayManager.remove(khaledOverlay);
 
         if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
             client.clearHintArrow();
