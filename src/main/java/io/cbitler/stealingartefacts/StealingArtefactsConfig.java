@@ -30,21 +30,24 @@ public interface StealingArtefactsConfig extends Config {
     @ConfigItem(
             keyName = HIGHLIGHT_PATROLS,
             name = "Highlight Patrols",
-            description = "Whether or not to highlight patrols"
+            description = "Whether or not to highlight patrols",
+            position = 3
     )
     default boolean highlightPatrols() { return true; }
 
     @ConfigItem(
             keyName = HIGHLIGHT_LADDERS,
             name = "Highlight House Ladders",
-            description = "Whether or not to highlight house ladders"
+            description = "Whether or not to highlight house ladders",
+            position = 1
     )
     default boolean highlightLadders() { return true; }
 
     @ConfigItem(
             keyName = HIGHLIGHT_GUARD_LURES,
             name = "Highlight Lured Guards",
-            description = "Whether or not to highlight guards when lured/positioned correctly"
+            description = "Whether or not to highlight guards when lured/positioned correctly",
+            position = 2
     )
     default boolean highlightGuardLures() { return true; }
 
