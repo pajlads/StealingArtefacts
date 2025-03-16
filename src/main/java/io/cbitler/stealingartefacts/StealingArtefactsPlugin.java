@@ -15,11 +15,9 @@ import net.runelite.client.plugins.xptracker.XpTrackerPlugin;
 import net.runelite.client.plugins.xptracker.XpTrackerService;
 import net.runelite.client.ui.overlay.OverlayManager;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 @PluginDescriptor(
         name = "Stealing Artefacts",
@@ -60,12 +58,14 @@ public class StealingArtefactsPlugin extends Plugin {
 
     public boolean showArtefactsToNextLevel = true;
 
+    private static final Set<Integer> CAPTAIN_KHALED_IDS = new HashSet<>(List.of(NpcID.CAPTAIN_KHALED, NpcID.CAPTAIN_KHALED_6972));
     public static final WorldPoint EAST_GUARD_POS = new WorldPoint(1777, 3746,0);
     public static final WorldPoint SOUTHEAST_GUARD_POS = new WorldPoint(1780, 3731,0);
     public boolean eastGuardLured = false;
 
     public boolean southEastGuardLured = false;
 
+    @Nullable
     public NPC captainKhaled;
 
     public int artefactsToGoal = -1;
@@ -196,9 +196,11 @@ public class StealingArtefactsPlugin extends Plugin {
      */
     @Subscribe
     public void onNpcSpawned(NpcSpawned event) {
-        if (event.getNpc().getId() == NpcID.CAPTAIN_KHALED_6972) {
+        if (CAPTAIN_KHALED_IDS.contains(event.getNpc().getId())) {
             captainKhaled = event.getNpc();
+            return;
         }
+
         if (event.getNpc().getId() >= Constants.PATROL_ID_MIN && event.getNpc().getId() <= Constants.PATROL_ID_MAX) {
             markedNPCs.add(event.getNpc());
         }
