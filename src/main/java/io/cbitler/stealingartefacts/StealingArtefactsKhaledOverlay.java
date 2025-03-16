@@ -59,7 +59,6 @@ public class StealingArtefactsKhaledOverlay extends Overlay {
         switch (plugin.currentState) {
             case NO_TASK:
             case FAILURE:
-            case DELIVER_ARTEFACT:
                 return MISSING_TASK_FILL;
 
             default:
