@@ -65,7 +65,7 @@ public interface StealingArtefactsConfig extends Config {
 
     @ConfigSection(
             name = "Overlay",
-            description = "asd",
+            description = "Controls the overlay display preferences",
             position = 10,
             closedByDefault = false
     )
