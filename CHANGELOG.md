@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Fix: Fixed an issue where Captain Khaled did not always get the arrow pointing to him. (#25)
+
 ## 1.4
 
 - Minor: Add a config for toggling the overlay. (#22)
