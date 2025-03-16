@@ -52,6 +52,16 @@ public interface StealingArtefactsConfig extends Config {
     default boolean highlightGuardLures() { return true; }
 
     @ConfigItem(
+            keyName = "highlightKhaledTaskless",
+            name = "Highlight Khaled without task",
+            description = "This option will highlight Khaled when you don't have a current target",
+            position = 4
+    )
+    default boolean highlightKhaledTaskless() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = SHOW_TO_NEXT_LEVEL,
             name = "Show artefacts to next level",
             description = "Whether or not to show artefacts to next level"
