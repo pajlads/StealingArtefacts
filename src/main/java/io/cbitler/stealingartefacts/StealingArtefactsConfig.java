@@ -1,8 +1,10 @@
 package io.cbitler.stealingartefacts;
 
+import lombok.AllArgsConstructor;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("stealingartefacts")
 public interface StealingArtefactsConfig extends Config {
@@ -61,19 +63,56 @@ public interface StealingArtefactsConfig extends Config {
         return true;
     }
 
-    @ConfigItem(
-            keyName = SHOW_TO_NEXT_LEVEL,
-            name = "Show artefacts to next level",
-            description = "Whether or not to show artefacts to next level"
+    @ConfigSection(
+            name = "Overlay",
+            description = "Controls the overlay display preferences",
+            position = 10,
+            closedByDefault = false
     )
-    default boolean showToNextLevel() { return true; }
+    String overlaySection = "Overlay";
 
     @ConfigItem(
             keyName = "showOverlay",
             name = "Show overlay",
-            description = "Uncheck this to hide the overlay"
+            description = "Uncheck this to hide the overlay",
+            section = overlaySection,
+            position = 1
     )
     default boolean showOverlay() {
         return true;
+    }
+
+    @ConfigItem(
+            keyName = SHOW_TO_NEXT_LEVEL,
+            name = "Show artefacts to next level",
+            description = "Whether or not to show artefacts to next level",
+            section = overlaySection,
+            position = 2
+    )
+    default boolean showToNextLevel() { return true; }
+
+    @AllArgsConstructor
+    enum OverlayShowGuardLure {
+        Always("Always"),
+        Never("Never"),
+        OnlyUnlured("Only unlured");
+
+        final String displayText;
+
+        @Override
+        public String toString() {
+            return this.displayText;
+        }
+    };
+
+    @ConfigItem(
+            keyName = "overlayShowGuardLures",
+            name = "Show guard lures",
+            description = "Uncheck this to hide the guard lure portion in the overlay",
+            section = overlaySection,
+            position = 3
+    )
+    default OverlayShowGuardLure overlayShowGuardLures() {
+        return OverlayShowGuardLure.Always;
     }
 }
