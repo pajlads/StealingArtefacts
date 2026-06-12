@@ -14,8 +14,9 @@ jobs:
           java-version: 11
 
       - name: Setup hub gradle version
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
+          cache-provider: basic
           gradle-version: 7.4 # https://github.com/runelite/plugin-hub/blob/master/package/gradle/wrapper/gradle-wrapper.properties
 
       - name: Build plugin using hub gradle version
