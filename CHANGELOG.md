@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.6
+
+- Fix: Issue with plugin not starting at startup. (#37)
+
 ## 1.5
 
 - Minor: Add an option for only showing unlured guards in the overlay. (#24)

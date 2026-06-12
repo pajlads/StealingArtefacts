@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -49,6 +50,9 @@ public class StealingArtefactsPlugin extends Plugin {
     private Client client;
 
     @Inject
+    private ClientThread clientThread;
+
+    @Inject
     private XpTrackerService xpTrackerService;
 
     public HashSet<GameObject> markedObjects = new HashSet<>();
@@ -85,7 +89,7 @@ public class StealingArtefactsPlugin extends Plugin {
 
         if (client.getGameState() == GameState.LOGGED_IN)
         {
-            loadConfig();
+            clientThread.invoke(this::loadConfig);
         }
     }
 
@@ -99,8 +103,12 @@ public class StealingArtefactsPlugin extends Plugin {
         this.overlayManager.remove(patrolOverlay);
         this.overlayManager.remove(khaledOverlay);
 
-        if (client.getLocalPlayer() != null && isInPisc(client.getLocalPlayer().getWorldLocation())) {
-            client.clearHintArrow();
+        if (client.getLocalPlayer() != null) {
+            clientThread.invoke(() -> {
+                if (isInPisc(client.getLocalPlayer().getWorldLocation())) {
+                    client.clearHintArrow();
+                }
+            });
         }
     }
 
@@ -131,7 +139,7 @@ public class StealingArtefactsPlugin extends Plugin {
         if (!c.getGroup().equalsIgnoreCase(StealingArtefactsConfig.GROUP_NAME)) {
             return;
         }
-        handleRefreshCurrentHouse();
+        clientThread.invoke(this::handleRefreshCurrentHouse);
     }
 
     /**
