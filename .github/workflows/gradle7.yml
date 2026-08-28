@@ -1,5 +1,16 @@
+---
 name: Build with Gradle 7.x
-on: pull_request
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: build-gradle7-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   gradle:
     strategy:
