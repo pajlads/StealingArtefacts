@@ -3,6 +3,7 @@
 ## 1.6
 
 - Fix: Issue with plugin not starting at startup. (#37)
+- Dev: harden ci. (#46)
 
 ## 1.5
 
