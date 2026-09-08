@@ -1,5 +1,7 @@
 ## Unreleased
 
+- Dev: Switch to Nerixyz/actionsx-prettier. (#49)
+
 ## 1.6
 
 - Fix: Issue with plugin not starting at startup. (#37)
