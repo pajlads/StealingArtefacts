@@ -4,7 +4,9 @@ import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
+import net.runelite.api.gameval.SpriteID;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -12,6 +14,8 @@ import net.runelite.client.ui.overlay.OverlayUtil;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 /**
  * Overlay to highlight the patrol-people in port pisc
@@ -22,28 +26,26 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
 
     public static final Color CLICKBOX_FILL_COLOR_LURED = new Color(0, 255, 0, 50);
 
-    private static final Color DIRECTION_ARROW_COLOR = Color.YELLOW;
-    private static final Color DIRECTION_ARROW_OUTLINE_COLOR = new Color(20, 20, 20);
-    private static final Stroke DIRECTION_ARROW_OUTLINE_STROKE = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-
-    private static final double ARROW_START = -0.1 * Perspective.LOCAL_TILE_SIZE;
-    private static final double ARROW_SHAFT_END = 0.18 * Perspective.LOCAL_TILE_SIZE;
-    private static final double ARROW_TIP = 0.42 * Perspective.LOCAL_TILE_SIZE;
-    private static final double ARROW_SHAFT_HALF_WIDTH = 0.05 * Perspective.LOCAL_TILE_SIZE;
-    private static final double ARROW_HEAD_HALF_WIDTH = 0.17 * Perspective.LOCAL_TILE_SIZE;
+    private static final int DIRECTION_ARROW_SIZE = 24;
+    private static final int CAMERA_UNITS_PER_ORIENTATION_UNIT = 8;
+    private static final int CAMERA_HALF_TURN = 8192;
 
     private final StealingArtefactsPlugin plugin;
     private final StealingArtefactsConfig config;
     private final Client client;
 
     @Inject
-    StealingArtefactsPatrolOverlay(Client client, StealingArtefactsPlugin plugin, StealingArtefactsConfig config) {
+    StealingArtefactsPatrolOverlay(Client client, StealingArtefactsPlugin plugin, StealingArtefactsConfig config,
+                                   SpriteManager spriteManager) {
         setPosition(OverlayPosition.DYNAMIC);
         setLayer(OverlayLayer.ABOVE_SCENE);
         this.client = client;
         this.plugin = plugin;
         this.config = config;
+        spriteManager.getSpriteAsync(SpriteID.Arrow.YELLOW_UP, 0, sprite -> directionArrow = sprite);
     }
+
+    private volatile BufferedImage directionArrow;
 
     /**
      * Overlay the patrol-people on the same plane as the player
@@ -78,61 +80,41 @@ public class StealingArtefactsPatrolOverlay extends Overlay {
     }
 
     private void renderFacingDirection(Graphics2D graphics, NPC actor) {
+        BufferedImage arrow = directionArrow;
+        if (arrow == null) {
+            return;
+        }
+
         LocalPoint actorLocation = actor.getLocalLocation();
         if (actorLocation == null) {
             return;
         }
 
-        double[][] offsets = arrowOffsets(actor.getCurrentOrientation());
-        Polygon arrow = new Polygon();
-        for (double[] offset : offsets) {
-            LocalPoint arrowPoint = actorLocation.plus((int) Math.round(offset[0]), (int) Math.round(offset[1]));
-            Point canvasPoint = Perspective.localToCanvas(client, arrowPoint, client.getPlane());
-            if (canvasPoint == null) {
-                return;
-            }
-            arrow.addPoint(canvasPoint.getX(), canvasPoint.getY());
+        Point canvasPoint = Perspective.localToCanvas(client, actorLocation, client.getPlane());
+        if (canvasPoint == null) {
+            return;
         }
 
-        Color originalColor = graphics.getColor();
-        Stroke originalStroke = graphics.getStroke();
+        Graphics2D arrowGraphics = (Graphics2D) graphics.create();
         try {
-            graphics.setColor(DIRECTION_ARROW_COLOR);
-            graphics.fill(arrow);
-            graphics.setColor(DIRECTION_ARROW_OUTLINE_COLOR);
-            graphics.setStroke(DIRECTION_ARROW_OUTLINE_STROKE);
-            graphics.draw(arrow);
+            double scaleX = (double) DIRECTION_ARROW_SIZE / arrow.getWidth();
+            double scaleY = (double) DIRECTION_ARROW_SIZE / arrow.getHeight();
+            AffineTransform transform = new AffineTransform();
+            transform.translate(canvasPoint.getX(), canvasPoint.getY());
+            transform.rotate(spriteRotation(actor.getCurrentOrientation(), client.getCameraYaw()));
+            transform.scale(scaleX, scaleY);
+            transform.translate(-arrow.getWidth() / 2.0, -arrow.getHeight() / 2.0);
+
+            arrowGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            arrowGraphics.drawImage(arrow, transform, null);
         } finally {
-            graphics.setColor(originalColor);
-            graphics.setStroke(originalStroke);
+            arrowGraphics.dispose();
         }
     }
 
-    static double[] directionVector(int orientation) {
-        double angle = (orientation & 2047) * Perspective.UNIT;
-        return new double[] {-Math.sin(angle), -Math.cos(angle)};
-    }
-
-    static double[][] arrowOffsets(int orientation) {
-        double[] forward = directionVector(orientation);
-        double rightX = -forward[1];
-        double rightY = forward[0];
-
-        return new double[][] {
-                pointAlongArrow(forward, rightX, rightY, ARROW_START, ARROW_SHAFT_HALF_WIDTH),
-                pointAlongArrow(forward, rightX, rightY, ARROW_SHAFT_END, ARROW_SHAFT_HALF_WIDTH),
-                pointAlongArrow(forward, rightX, rightY, ARROW_SHAFT_END, ARROW_HEAD_HALF_WIDTH),
-                pointAlongArrow(forward, rightX, rightY, ARROW_TIP, 0),
-                pointAlongArrow(forward, rightX, rightY, ARROW_SHAFT_END, -ARROW_HEAD_HALF_WIDTH),
-                pointAlongArrow(forward, rightX, rightY, ARROW_SHAFT_END, -ARROW_SHAFT_HALF_WIDTH),
-                pointAlongArrow(forward, rightX, rightY, ARROW_START, -ARROW_SHAFT_HALF_WIDTH)
-        };
-    }
-
-    private static double[] pointAlongArrow(double[] forward, double rightX, double rightY, double distance, double width) {
-        return new double[] {
-                forward[0] * distance + rightX * width,
-                forward[1] * distance + rightY * width
-        };
+    static double spriteRotation(int orientation, int cameraYaw) {
+        int orientationInCameraUnits = (orientation & 2047) * CAMERA_UNITS_PER_ORIENTATION_UNIT;
+        int relativeAngle = orientationInCameraUnits + (cameraYaw & 16383) - CAMERA_HALF_TURN;
+        return relativeAngle * Perspective.UNIT14;
     }
 }
